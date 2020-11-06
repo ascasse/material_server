@@ -1,0 +1,8 @@
+font-weight ---  bold
+font-size ---  20px
+line-height ---  1.5
+cover --- image.jpg
+page --- Lorem, ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit, quas dignissimos minima
+page --- Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda, architecto!
+page --- Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+image --- image.jpg

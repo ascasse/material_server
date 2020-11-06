@@ -1,0 +1,53 @@
+{
+    "font-weight": "normal",
+    "font-size": "6vw",
+    "line-height": 1.2,
+    "cover": "Las moscas y la miel.png",
+    "title": "Las moscas y la miel",
+    "pages": [{
+            "line": "Las moscas y la miel"
+        },
+        {
+            "lines": [{
+                    "line": "A un panal de rica miel"
+                },
+                {
+                    "line": "dos mil moscas acudieron"
+                },
+                {
+                    "line": "que por golosas murieron"
+                },
+                {
+                    "line": "presas de patas en él."
+                }
+            ]
+        },
+        {
+            "lines": [{
+                    "line": "Otra, dentro de un pastel"
+                },
+                {
+                    "line": "enterró su golosina."
+                }
+            ]
+        },
+        {
+            "lines": [{
+                    "line": "Así, si bien se examina "
+                },
+                {
+                    "line": "los humanos corazones"
+                },
+                {
+                    "line": "perecen en las prisiones"
+                },
+                {
+                    "line": "del vicio que los domina."
+                }
+            ]
+        },
+        {
+            "image": "Las moscas y la miel.png"
+        }
+    ]
+}

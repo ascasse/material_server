@@ -1,0 +1,26 @@
+BEGIN TRANSACTION;
+
+DROP TABLE IF EXISTS Categories;
+DROP TABLE IF EXISTS Words;
+
+CREATE TABLE
+IF NOT EXISTS "Categories"
+(
+	"id"	INTEGER,
+	"name"	TEXT NOT NULL UNIQUE,
+	"lastUse"	datetime,
+	PRIMARY KEY
+("id" AUTOINCREMENT)
+);
+CREATE TABLE
+IF NOT EXISTS "Words"
+(
+	"id"	INTEGER,
+	"word"	TEXT NOT NULL UNIQUE,
+	"categoryId"	INTEGER,
+	"lastUse"	datetime,
+	"views"	INTEGER DEFAULT 0,
+	PRIMARY KEY
+("id" AUTOINCREMENT)
+);
+COMMIT;

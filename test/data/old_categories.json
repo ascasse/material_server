@@ -1,0 +1,5 @@
+[
+    {
+        "id": 1, "name": "Category 1", "images": [ { "id": 1, "title": "Image 1", "imagefilepath": "path1"} ]
+    }
+]

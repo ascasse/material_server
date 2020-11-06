@@ -1,0 +1,1 @@
+muebles : mesa, silla, sofá, estantería, sillón, lámpara, televisión

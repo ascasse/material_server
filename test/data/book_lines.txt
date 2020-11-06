@@ -1,0 +1,14 @@
+font-weight ---  bold
+font-size ---  20px
+line-height ---  1.5
+cover --- image.jpg
+page 
+line --- Lorem, ipsum dolor sit amet 
+line --- consectetur adipisicing elit. 
+line --- Reprehenderit, quas dignissimos minima
+page
+line --- Lorem ipsum dolor sit amet, consectetur
+page 
+line --- Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+line --- consectetur adipisicing elit. 
+image --- image.jpg

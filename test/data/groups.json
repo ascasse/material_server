@@ -1,0 +1,8 @@
+[
+    {
+        "id": 0, "name": "Group 1", "lastseen": "2019/12/01", "images": [ { "id": 0, "title": "Image 1", "imagefilepath": "path1"} ]
+    },
+    {
+        "id": 0, "name": "Group 2", "lastseen": "2019/10/05", "images": [ { "id": 0, "title": "Image 2", "imagefilepath": "path2"} ]
+    }
+]
