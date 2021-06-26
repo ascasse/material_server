@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "title": "Category",
+  "description": "A group of related information elements",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "The unique identifier for a category",
+      "type": "integer"
+    },
+    "name": {
+      "description": "Name of the category",
+      "type": "string"
+    },
+    "lastseen": {
+      "description": "Last date the category was visited.",
+      "type": "string"
+    },
+    "items": {
+        "description": "Elements in the category",
+        "type": "array",
+        "items": {
+            "type": "object", 
+            "properties": {
+              "id": {
+                  "description": "The unique identifier for an item",
+                  "type": "integer"
+              },
+              "text": {
+                "description": "Text for the element",
+                "type": "string"
+              },
+              "image": {
+                "description": "Location of an image for the element",
+                "type": "string"
+              },
+              "lastseen": {
+                "description": "Last date the element was used.",
+                "type": "string"
+              }
+          },
+          "required": [ "id", "text" ]
+      }
+    }
+  },
+  "required": [ "id", "name" ]
+}

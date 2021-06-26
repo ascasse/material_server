@@ -1,0 +1,90 @@
+[       
+    {
+        "$schema": "./categorydb_schema.json",
+        "id": 1,
+        "name": "Foods",
+        "lastseen": "2020/10/22",
+        "items": [
+        {
+            "id": "1",
+            "text": "muesli",
+            "lastseen": "2020/10/22"
+        },
+        {
+            "id": 2,
+            "text": "syrup"
+        },
+        {
+            "id": 3,
+            "text": "salami"
+        },
+        {
+            "id": 4,
+            "text": "oatmeal"
+        },
+        {
+            "id": 5,
+            "text": "doughnut"
+        },
+        {
+            "id": 6,
+            "text": "raisins"
+        },
+        {
+            "id": 7,
+            "text": "clam"
+        },
+        {
+            "id": 8,
+            "text": "pudding"
+        },
+        {
+            "id": 9,
+            "text": "apricots"
+        },
+        {
+            "id": 10,
+            "text": "caviar"
+        },
+        {
+            "id": 11,
+            "text": "cake"
+        },
+        {
+            "id": 12,
+            "text": "sausage"
+        },
+        {
+            "id": 13,
+            "text": "cheese"
+        },
+        {
+            "id": 14,
+            "text": "burritos"
+        },
+        {
+            "id": 15,
+            "text": "mayonnaise"
+        }
+        ]
+    },
+    {
+        "id": 2,
+        "name": "Banderas Europa",
+        "lastseen": "",
+        "items": [
+        {
+            "id": 16,
+            "text": "Alemania",
+            "lastseen": "",
+            "ImagePath": "imgs/Banderas/Alemania.png"
+        },
+        {
+            "id": 17,
+            "text": "Francia",
+            "lastseen": "",
+            "ImagePath": "imgs/Banderas/Francia.png"
+        }
+        ]
+    }
+]

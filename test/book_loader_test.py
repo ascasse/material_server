@@ -1,5 +1,8 @@
+'''
+Books loader test class
+'''
 import unittest
-from book_loader import process_book, read_file, load_json_book
+from plugins.books.book_loader import process_book, read_file, load_json_book
 
 
 class BookLoaderTest(unittest.TestCase):

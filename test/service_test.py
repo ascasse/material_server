@@ -4,8 +4,9 @@
 
 import unittest
 from datetime import datetime, timedelta
-from plugins.vocabulary.service import Service
+
 import plugins.vocabulary.vocabulary_db as db
+from plugins.vocabulary.service import Service
 
 
 class ServiceTest(unittest.TestCase):
@@ -14,8 +15,10 @@ class ServiceTest(unittest.TestCase):
     def setUp(self):
         """ Initialize service and create in-memory database."""
         self.service = Service(":memory:")
-        db.run_script(self.service.db_words.connection, "test/data/test_database.sql")
-        db.run_script(self.service.db_words.connection, "test/data/test_data.sql")
+        db.run_script(self.service.db_words.connection,
+                      "test/data/test_database.sql")
+        db.run_script(self.service.db_words.connection,
+                      "test/data/test_data.sql")
         # Configure service
         self.service.batch_size = 5
         self.service.max_views = 3
@@ -59,7 +62,8 @@ class ServiceTest(unittest.TestCase):
 
     def test_update_category(self):
         category = self.service.create_category(self.category)
-        category["words"].append({"word": "new_word", "lastUse": None, "views": 0})
+        category["words"].append(
+            {"word": "new_word", "lastUse": None, "views": 0})
         category["words"].pop(2)
         category["words"].pop(2)
         self.service.update_category(category)
@@ -101,7 +105,7 @@ class ServiceTest(unittest.TestCase):
     def test_build_batch_small_category(self):
         """ Expect to return all the words in the category """
         self.category["id"] = 7
-        del self.category["words"][self.service.batch_size - 1 :]
+        del self.category["words"][self.service.batch_size - 1:]
         batch = self.service.build_batch_from_category(self.category)
         self.assertEqual(len(batch["words"]), len(self.category["words"]))
 
@@ -114,7 +118,8 @@ class ServiceTest(unittest.TestCase):
             self.category["words"][i]["id"] = i
         batch = self.service.build_batch_from_category(self.category)
         self.assertEqual(len(batch["words"]), self.service.batch_size)
-        self.assertEqual(batch["words"][0]["id"], self.category["words"][0]["id"])
+        self.assertEqual(batch["words"][0]["id"],
+                         self.category["words"][0]["id"])
 
     def test_build_batch_iterations(self):
         """ Expect to build 4 batches before completed.
@@ -134,7 +139,8 @@ class ServiceTest(unittest.TestCase):
         self.assertEqual([3, 2, 2, 2, 0], [w["views"] for w in batch["words"]])
 
         updated = self.service.update_views(batch)
-        self.assertEqual([4, 3, 3, 3, 1], [w["views"] for w in updated["words"]])
+        self.assertEqual([4, 3, 3, 3, 1], [w["views"]
+                         for w in updated["words"]])
 
         # Batch 2
         batch = self.service.build_batch_from_category_id(category["id"])
@@ -142,7 +148,8 @@ class ServiceTest(unittest.TestCase):
         self.assertEqual([3, 3, 1, 0, 0], [w["views"] for w in batch["words"]])
 
         updated = self.service.update_views(batch)
-        self.assertEqual([4, 4, 2, 1, 1], [w["views"] for w in updated["words"]])
+        self.assertEqual([4, 4, 2, 1, 1], [w["views"]
+                         for w in updated["words"]])
 
         # Batch 3
         batch = self.service.build_batch_from_category_id(category["id"])
@@ -150,7 +157,8 @@ class ServiceTest(unittest.TestCase):
         self.assertEqual([3, 3, 2, 1, 1], [w["views"] for w in batch["words"]])
 
         updated = self.service.update_views(batch)
-        self.assertEqual([4, 4, 3, 2, 2], [w["views"] for w in updated["words"]])
+        self.assertEqual([4, 4, 3, 2, 2], [w["views"]
+                         for w in updated["words"]])
 
         # Batch 4
         batch = self.service.build_batch_from_category_id(category["id"])
@@ -158,7 +166,8 @@ class ServiceTest(unittest.TestCase):
         self.assertEqual([3, 3, 3, 2, 2], [w["views"] for w in batch["words"]])
 
         updated = self.service.update_views(batch)
-        self.assertEqual([4, 4, 4, 3, 3], [w["views"] for w in updated["words"]])
+        self.assertEqual([4, 4, 4, 3, 3], [w["views"]
+                         for w in updated["words"]])
 
         # Batch 5
         batch = self.service.build_batch_from_category_id(category["id"])

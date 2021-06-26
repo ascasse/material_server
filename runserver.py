@@ -20,7 +20,7 @@ from dotenv import load_dotenv
 
 from material_plugin import MaterialPlugin
 from generator import Generator
-from model import category_encoder
+from model_old import category_encoder
 import loginit
 
 from plugin_loader import load_plugins
@@ -106,7 +106,7 @@ def get_categories():
 
 @app.route("/categories/<int:category_id>")
 def get_category(category_id):
-    """ Return category images"""
+    """Return category images"""
     category = generator.get_category(category_id)
     if category is None:
         abort(404)

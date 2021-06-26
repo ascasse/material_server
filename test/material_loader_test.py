@@ -1,13 +1,14 @@
 import unittest
 from pathlib import Path
-from loader import MaterialLoader
+from material_loader import MaterialLoader
 
 
 class LoaderTest(unittest.TestCase):
 
     def setUp(self):
         self.test_group = {'id': 1, 'name': 'TestGroup', 'images': []}
-        self.test_image = {'id': 1, 'title': 'Title1', 'imagefilepath': 'path1'}
+        self.test_image = {'id': 1, 'title': 'Title1',
+                           'imagefilepath': 'path1'}
         self.test_group['images'].append(self.test_image)
 
     def test_save_groups(self):

@@ -1,5 +1,5 @@
 """
-    Loader class for voacbulary learning material
+    Loader class for vocabulary learning material
 """
 
 import os

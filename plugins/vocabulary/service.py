@@ -2,7 +2,7 @@
     Vocabulary service
 """
 
-from book_loader import logger
+from loginit import logger
 from plugins.vocabulary.db_words import DBWords
 
 
@@ -59,7 +59,7 @@ class Service:
         try:
             current = self.db_words.select_category(category["id"])
             if (category["name"] != current["name"]) or (
-                category["lastUse"] != current["lastUse"]
+                    category["lastUse"] != current["lastUse"]
             ):
                 self.db_words.update_category(current)
 
@@ -69,7 +69,8 @@ class Service:
             to_update = []
             for keep_word in to_keep:
                 current_word = next(
-                    (x for x in current["words"] if x["id"] == keep_word["id"]), None
+                    (x for x in current["words"]
+                     if x["id"] == keep_word["id"]), None
                 )
                 if current_word is None:
                     continue
@@ -91,7 +92,7 @@ class Service:
             return category["id"]
         except Exception as exc:
             logger.error(exc.args[0])
-            raise Exception(exc.args[0])
+            raise Exception(exc.args[0]) from exc
 
     def update_views(self, batch):
         """ Updates view info of given words.
@@ -125,7 +126,8 @@ class Service:
                 list(category). List of batches
         """
 
-        categories = self.db_words.get_recent(self.recent_days, self.recent_count)
+        categories = self.db_words.get_recent(
+            self.recent_days, self.recent_count)
         recent = []
         for category_id in [c["id"] for c in categories]:
             recent.append(self.build_batch_from_category_id(category_id))
@@ -152,7 +154,8 @@ class Service:
             batch["words"] = category["words"]
             return batch
 
-        sorted_words = sorted(category["words"], key=lambda w: w["views"], reverse=True)
+        sorted_words = sorted(
+            category["words"], key=lambda w: w["views"], reverse=True)
 
         # If no element has reached max_views, take the first batch_size elements
         # When batch_size is greater or equal than the number of elements in the category,
@@ -163,14 +166,15 @@ class Service:
 
         # Position of the first word with views below max_views
         pos = next(
-            (i for i, w in enumerate(sorted_words) if w["views"] < self.max_views), None
+            (i for i, w in enumerate(sorted_words)
+             if w["views"] < self.max_views), None
         )
         if pos > self.refresh_rate:
             pos = pos - pos % self.refresh_rate
         if len(sorted_words) - (pos + 1) >= self.batch_size:
-            batch["words"] = sorted_words[pos : pos + self.batch_size]
+            batch["words"] = sorted_words[pos: pos + self.batch_size]
         else:
-            batch["words"] = sorted_words[len(sorted_words) - self.batch_size :]
+            batch["words"] = sorted_words[len(sorted_words) - self.batch_size:]
         return batch
 
 
@@ -191,7 +195,8 @@ def merge_words(current_words, new_words):
     to_keep = []
     to_delete = []
     for word in current_words:
-        found = next((item for item in new_words if item["word"] == word["word"]), None)
+        found = next(
+            (item for item in new_words if item["word"] == word["word"]), None)
         if found:
             to_keep.append(found)
         else:

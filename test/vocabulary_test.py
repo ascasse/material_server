@@ -1,5 +1,5 @@
 """
-    Test Loader class
+    Vocabulary module tests
 """
 import unittest
 from pathlib import Path
@@ -7,6 +7,9 @@ from plugins.vocabulary.loader import Loader
 
 
 class VocabularyTest(unittest.TestCase):
+    ''' Vocabulary module tester class
+    '''
+
     def test_load_from_json(self):
         voc = Loader(0, "test/data")
         vocabulary = voc.load_json("test/data/Vocabulary/sample.json")

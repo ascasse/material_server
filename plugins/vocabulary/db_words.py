@@ -49,10 +49,12 @@ class DBWords:
                 data["w_lastUse"] = datetime.strptime(
                     data["w_lastUse"], "%Y-%m-%d %H:%M:%S.%f"
                 )
-        category = {k[2:]: ddata[0][k] for k in ddata[0].keys() if k.startswith("c_")}
+        category = {k[2:]: ddata[0][k]
+                    for k in ddata[0].keys() if k.startswith("c_")}
         words = []
         for data in ddata:
-            words.append({k[2:]: data[k] for k in data.keys() if k.startswith("w_")})
+            words.append({k[2:]: data[k]
+                         for k in data.keys() if k.startswith("w_")})
         category["words"] = words
         return category
 
@@ -72,13 +74,15 @@ class DBWords:
         try:
             cursor = self.connection.cursor()
             sql = f"INSERT INTO Categories('name', 'lastUse') VALUES (?,?)"
-            cursor.execute(sql, (category["name"], category.get("lastUse", None)))
+            cursor.execute(
+                sql, (category["name"], category.get("lastUse", None)))
             cursor.execute("SELECT last_insert_rowid()")
             row = cursor.fetchone()
             category_id = row[0]
 
             input_words = [
-                (w["word"], w.get("views", 0), w.get("lastUse", None), category_id)
+                (w["word"], w.get("views", 0), w.get(
+                    "lastUse", None), category_id)
                 for w in category["words"]
             ]
             if input_words:
@@ -132,7 +136,8 @@ class DBWords:
     def delete_words(self, words):
         try:
             cursor = self.connection.cursor()
-            ids = str([item["id"] for item in words]).replace("[", "").replace("]", "")
+            ids = str([item["id"] for item in words]).replace(
+                "[", "").replace("]", "")
             sql = f"DELETE FROM Words WHERE id IN ({ids})"
             cursor.execute(sql)
             self.connection.commit()
@@ -144,7 +149,8 @@ class DBWords:
         try:
             cursor = self.connection.cursor()
             new_words = [
-                (w["word"], w.get("views", 0), w.get("lastUse", None), category_id)
+                (w["word"], w.get("views", 0), w.get(
+                    "lastUse", None), category_id)
                 for w in words
             ]
             if new_words:
@@ -165,16 +171,15 @@ class DBWords:
             of categories returned is limited.
 
             Parameters:
-
                 days: integer. Range of days backward from today to look into
-
                 count: integer. Maximum number of categories returned
         """
 
         try:
             self.connection.row_factory = sqlite3.Row
             cursor = self.connection.cursor()
-            recent_day = (datetime.today() + timedelta(days=-days)).strftime("%Y-%m-%d")
+            recent_day = (datetime.today() + timedelta(days=-days)
+                          ).strftime("%Y-%m-%d")
             sql = f"SELECT * FROM Categories \
                 WHERE lastUse > '{recent_day}' OR lastUse IS Null\
                 ORDER BY lastUSE DESC LIMIT {count}"

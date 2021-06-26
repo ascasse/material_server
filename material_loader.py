@@ -5,7 +5,7 @@
 
 import logging
 import json
-from book_loader import load_book, load_json_book
+from plugins.books.book_loader import load_book, load_json_book
 
 
 logger = logging.getLogger(__name__)
@@ -64,14 +64,16 @@ class MaterialLoader:
                     elements.append(book_dict)
                     self.counter += 1
             else:
-                elements.append({"id": self.counter, "title": item.stem, "imagefilepath": str(item)})
+                elements.append(
+                    {"id": self.counter, "title": item.stem, "imagefilepath": str(item)})
                 self.counter += 1
         if elements:
             category_name = '_'.join(working_dir.relative_to(self.path).parts)
             if not category_name:
                 category_name = self.path.stem
             self.category_counter += 1
-            category = self.build_category(self.category_counter, category_name, elements)
+            category = self.build_category(
+                self.category_counter, category_name, elements)
             self.categories.append(category)
 
     def build_category(self, category_id, name, elements):

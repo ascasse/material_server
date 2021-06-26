@@ -2,28 +2,11 @@
   {
     "id": 1,
     "name": "category_1",
-    "images": [
-      {
-        "id": 1,
-        "title": "Monument Valley",
-        "imagefilepath": "data\\category_1\\Monument Valley.jpg"
-      }
-    ]
+    "items": []
   },
   {
     "id": 2,
     "name": "category_2",
-    "images": [
-      {
-        "id": 2,
-        "title": "Puente Vasco de Gama. Lisboa, Portugal",
-        "imagefilepath": "data\\category_2\\Puente Vasco de Gama. Lisboa, Portugal.jpg"
-      },
-      {
-        "id": 3,
-        "title": "Venecia",
-        "imagefilepath": "data\\category_2\\Venecia.jpg"
-      }
-    ]
+    "items": []
   }
 ]

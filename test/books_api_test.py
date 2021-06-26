@@ -1,10 +1,15 @@
+"""
+    Books module tests
+"""
 import unittest
 from pathlib import Path
-from book_loader import process_book, load_book, read_file
+from plugins.books.book_loader import process_book, load_book, read_file
 from api.books.books_api import find_book_cover
 
 
 class BooksAPITest(unittest.TestCase):
+    '''Books module API tester class
+    '''
 
     def setUp(self):
         self.lines = read_file('./test/data/book.txt')
