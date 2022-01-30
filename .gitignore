@@ -138,7 +138,6 @@ dmypy.json
 
 # logs
 *.log.*
-<<<<<<< HEAD
 
 # vscode
 .vscode/*
@@ -150,5 +149,3 @@ dmypy.json
 
 # Local History for Visual Studio Code
 .history/
-=======
->>>>>>> aa5aa48 (Updated gitignore. Removed unneeded files.)
