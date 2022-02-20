@@ -271,6 +271,6 @@ def handle_exception(exception):
 
 
 if __name__ == "__main__":
-    # app.run()
+    # app.run(port=5050)
     # serve(app, host="192.168.1.57", port=5000)
     serve(app, port=5050)
