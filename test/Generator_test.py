@@ -9,7 +9,7 @@ from model import Category, Item
 
 logger = logging.getLogger(__name__)
 
-PATH = "./test/data"
+PATH = "e:/material/bits"
 
 
 class GeneratorTest(unittest.TestCase):
@@ -18,13 +18,12 @@ class GeneratorTest(unittest.TestCase):
         # generator = Generator("./test/no_data")
         generator = Generator(".")
         self.assertIsNotNone(generator)
-        self.assertTrue(len(generator.categories) == 0)
-        self.assertTrue(len(generator.groups) == 0)
-        # Path.rmdir(Path("./test/no_data"))
+        categories = generator.generate()
+        self.assertTrue(len(categories) == 0)
 
     def test_load_categories(self):
         generator = Generator(PATH)
-        categories = generator.categories
+        categories = generator.generate()
         self.assertIsNotNone(categories)
         self.assertTrue(categories)
         self.assertTrue(categories[0].id != 0)

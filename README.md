@@ -6,4 +6,5 @@
 
 ## Launch
 
-        python -m runserver
+        python runserver
+        python runserver_waitress

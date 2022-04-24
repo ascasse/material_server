@@ -110,7 +110,7 @@ class MaterialDbService:
     def update_batch(self, batch):
         """Increases by one the count of views of every item in the batch"""
         try:
-            sql_update_category_use = f"UPDATE Categories SET LastUse = '{dt.now().strftime('%Y/%m/%d')}' WHERE Id = {batch['id']}"
+            sql_update_category_use = f"UPDATE Categories SET LastUse = '{dt.now().strftime('%Y/%m/%d')}' WHERE Id = {batch['Id']}"
             db.run_sql(self.database, sql_update_category_use)
             item_ids = [item["Id"] for item in batch["Items"]]
             items = db.all_items(self.database)

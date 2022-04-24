@@ -18,12 +18,7 @@ from werkzeug.exceptions import HTTPException
 from flask_cors import CORS
 from dotenv import load_dotenv
 from material_db_service import MaterialDbService
-
 from material_plugin import MaterialPlugin
-from generator import Generator
-from model_old import category_encoder
-import loginit
-
 from plugin_loader import load_plugins
 from api.books.books_api import books_api, loader
 from api.questions.qa_api import qa_api
@@ -97,6 +92,7 @@ for blueprint in blueprints:
     app.register_blueprint(blueprint)
 
 
+@app.route("/")
 @app.route("/recent")
 def get_recent_categories():
     """Recently used categories"""
@@ -274,3 +270,4 @@ if __name__ == "__main__":
     # app.run(port=5050)
     # serve(app, host="192.168.1.57", port=5000)
     serve(app, port=5050)
+    # serve(app, port=5000)
