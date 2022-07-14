@@ -5,7 +5,7 @@ import os
 
 from pathlib import Path
 from json.decoder import JSONDecodeError
-from generator import merge, load_model
+from generator import merge
 from model_old import category_decoder
 
 logger = logging.getLogger(__name__)

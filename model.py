@@ -1,6 +1,6 @@
 """ Model """
 import datetime
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List
 
 
@@ -20,8 +20,8 @@ class Category:
     """Container for a group of related items."""
 
     name: str
-    items: List[Item]
-    last_view: datetime.date = None
+    items: List = field(default_factory=list)
+    last_view: datetime.datetime = None
     id: int = 0
 
 

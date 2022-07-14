@@ -1,30 +1,37 @@
+"""
+    Builds category collection from directory content
+"""
+
 import sys
-from os import environ, path
 from argparse import ArgumentParser
+from os import path
+
 import logging
 import json
 
 from pathlib import Path
-from dotenv import load_dotenv
-from material_db import run_script, create_category
 from typing import List
 
+from repository import Repository
 from model import Category, Item
+from sqlite_repository import SQLiteRepository
 
 logger = logging.getLogger(__name__)
 
 
 class Generator:
-    """Construye una lista de categorías clasificando el contenido de un directorio."""
+    """Fills repository from a directory content"""
 
-    def __init__(self, base_path):
+    def __init__(self, base_path: str, repository: Repository):
         self.path = Path(base_path)
+        self.repository = repository
 
-    def generate(self) -> List:
+    def load_categories(self) -> List:
         return self.process_dir(self.path)
 
     def process_dir(self, data_path: str) -> List:
-        """Build categories for directories containing images (jpg or png)"""
+        """Create categories for directories containing images (jpg or png)"""
+        print(data_path)
         categories = []
         image_files = [
             f
@@ -35,22 +42,24 @@ class Generator:
             items = []
             for image in image_files:
                 imagefile_path = path.relpath(str(image), self.path)
-                items.append(
-                    Item(
-                        image.stem[:60] if len(image.stem) > 60 else image.stem,
-                        imagefile_path,
-                    )
-                )
+                items.append(Item(image.stem, imagefile_path))
             categories.append(Category(data_path.stem, items))
             logger.info(f"Category: {data_path.stem}")
+            print(f"Items: {len(items)}")
 
         for directory in [d for d in data_path.iterdir() if Path.is_dir(d)]:
             categories += self.process_dir(directory)
 
         return categories
 
+    def save_categories(self, categories: List):
+        """Save given categories to repository"""
+        for category in categories:
+            self.repository.save_category(category)
 
-def load_model(model_path, hook):
+
+def load_categories_json(model_path, hook):
+    """Load categories from a json file"""
     try:
         with open(model_path, "r", encoding="utf-8") as fmodel:
             return json.load(fmodel, object_hook=hook)
@@ -65,19 +74,19 @@ def load_model(model_path, hook):
         return []
 
 
-def merge(old_categories: List, current):
+def merge(old_categories: List, current: List):
     dict_categories = {}
     dict_bits = {}
-    for category in old_categories:
-        dict_categories[category.name] = category
-        for bit in category.items:
+    for categ in old_categories:
+        dict_categories[categ.name] = categ
+        for bit in categ.items:
             dict_bits[bit.imagefilepath] = bit
 
-    for category in current:
-        if category.name in dict_categories:
-            if category.id == 0:
-                category.id = dict_categories[category.name].id
-            for bit in category.items:
+    for categ in current:
+        if categ.name in dict_categories:
+            if categ.id == 0:
+                categ.id = dict_categories[categ.name].id
+            for bit in categ.items:
                 if bit.imagefilepath in dict_bits:
                     if bit.id == 0:
                         bit.id = dict_bits[bit.imagefilepath].id
@@ -102,39 +111,54 @@ def merge(old_categories: List, current):
     # return current
 
 
+def main():
+
+    try:
+        parser = ArgumentParser()
+        parser.add_argument("directory", help="directory to process")
+        parser.add_argument("database", help="output database")
+
+        args = parser.parse_args()
+
+        print(f"Processing directory: {args.directory}")
+        print(f"Building database: {args.database}")
+
+        repository = SQLiteRepository(args.database)
+        repository.run_script("./Material_database.sql")
+        generator = Generator(args.directory, repository)
+
+        # Print categories info
+        # found_categories = generator.load_categories()
+        found_categories = generator.process_dir(args.directory)
+        print(f"Found {len(found_categories)} categories")
+
+        print("Saving to database")
+        generator.save_categories(found_categories)
+
+    except (SystemExit) as ex:
+        print(ex)
+        return
+
+
 if __name__ == "__main__":
+    sys.exit(main())
 
-    load_dotenv(verbose=True)
+    # argparse = ArgumentParser()
+    # argparse.add_argument(
+    #     "-c", "--create", action="store_true", help="load material into database"
+    # )
+    # args = argparse.parse_args()
+    # if args.create:
+    #     print("Create database")
+    #     run_script(Path(db_path, DATABASE), SCRIPT)
+    #     # run_script(Path("e:/git/learning/material_server/", "aaaa.db3"), SCRIPT)
 
-    PATH = environ.get("database_path", "./")
-    DATABASE = environ.get("database", None)
-    SCRIPT = environ.get("script_create_database")
+    #     for category in found_categories:
+    #         # create_category(
+    #         #     Path("e:/git/learning/material_server/", "aaaa.db3"), category
+    #         # )
+    #         create_category(Path(db_path, DATABASE), category)
 
-    BITS = environ.get("bits", ".")
+    #     sys.exit(0)
 
-    # Create a Generator for the given path
-    generator = Generator(Path(BITS))
-
-    # Print categories info
-    found_categories = generator.generate()
-    print(found_categories)
-
-    argparse = ArgumentParser()
-    argparse.add_argument(
-        "-c", "--create", action="store_true", help="load material into database"
-    )
-    args = argparse.parse_args()
-    if args.create:
-        print("Create database")
-        run_script(Path(PATH, DATABASE), SCRIPT)
-        # run_script(Path("e:/git/learning/material_server/", "aaaa.db3"), SCRIPT)
-
-        for category in found_categories:
-            # create_category(
-            #     Path("e:/git/learning/material_server/", "aaaa.db3"), category
-            # )
-            create_category(Path(PATH, DATABASE), category)
-
-        sys.exit(0)
-
-    print("Do nothing")
+    # print("Do nothing")

@@ -71,11 +71,11 @@ BITS_PATH = Path(MATERIAL).joinpath("bits")
 logger.info(f"Reading material from {MATERIAL}.")
 
 # Initialize database
-try:
-    generator = Generator(BITS_PATH)
-except FileNotFoundError:
-    print(f"{strerror(errno.ENOENT)}: {BITS_PATH}")
-    exit("No data available")
+# try:
+#     generator = Generator(BITS_PATH)
+# except FileNotFoundError:
+#     print(f"{strerror(errno.ENOENT)}: {BITS_PATH}")
+#     exit("No data available")
 
 blueprints = []
 plugins = load_plugins("plugins", MaterialPlugin)

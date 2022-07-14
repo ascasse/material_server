@@ -8,7 +8,7 @@ from model import Category, Item
 
 
 class MaterialDbServiceTest(unittest.TestCase):
-    """ MaterialDbService tests """
+    """MaterialDbService tests"""
 
     def setUp(self):
         # """Initialize service and create in-memory database."""
@@ -18,7 +18,7 @@ class MaterialDbServiceTest(unittest.TestCase):
         self.service = MaterialDbService("test_db.db3")
         self.service.create_database("test_db.db3")
 
-        category = Category("Test", [])
+        category = Category("Test", [], dt.today)
         category.items = [
             Item("Item1"),
             Item("Item2"),
@@ -28,6 +28,7 @@ class MaterialDbServiceTest(unittest.TestCase):
         self.service.add_category(category)
 
     def test_get_recent(self):
+        """Get recent categories"""
         categories = self.service.get_recent()
         self.assertIsNotNone(categories)
         self.assertIsNotNone(categories[0]["LastUse"])

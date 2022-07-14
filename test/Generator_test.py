@@ -4,8 +4,7 @@ import os
 import logging
 from pathlib import Path
 
-from generator import Generator, merge
-from model import Category, Item
+from generator import Generator
 
 logger = logging.getLogger(__name__)
 
@@ -14,19 +13,25 @@ PATH = "e:/material/bits"
 
 class GeneratorTest(unittest.TestCase):
     def test_no_categories(self):
-        # Path.mkdir(Path("./test/no_data"))
-        # generator = Generator("./test/no_data")
-        generator = Generator(".")
+        Path.mkdir(Path("./test/no_data"))
+        generator = Generator("./test/no_data")
+        # generator = Generator(".")
         self.assertIsNotNone(generator)
-        categories = generator.generate()
+        categories = generator.load_categories()
+        Path.rmdir(Path("./test/no_data"))
         self.assertTrue(len(categories) == 0)
 
     def test_load_categories(self):
         generator = Generator(PATH)
-        categories = generator.generate()
+        categories = generator.load_categories()
         self.assertIsNotNone(categories)
         self.assertTrue(categories)
-        self.assertTrue(categories[0].id != 0)
+
+        self.assertTrue(categories[0].id == 0)
+        self.assertTrue(categories[0].items)
+        self.assertTrue(categories[0].items[0].id == 0)
+        self.assertTrue(categories[0].items[0].views == 0)
+        self.assertTrue(categories[0].items[0].last_view is None)
 
     # def test_update_group(self):
     #     generator = Generator("./test")
@@ -52,5 +57,5 @@ class GeneratorTest(unittest.TestCase):
         try:
             if os.path.exists("./test/groups.json"):
                 os.remove("./test/groups.json")
-        except Exception as e:
-            logger.error(str(e))
+        except Exception as ex:
+            logger.error(str(ex))

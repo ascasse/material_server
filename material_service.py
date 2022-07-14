@@ -1,19 +1,19 @@
 """
     Material service
 """
-from datetime import datetime as dt, timedelta
+from datetime import datetime as dt
 from os import environ
 from dotenv.main import load_dotenv
 from pathlib import Path
+from typing import List
+from repository import Repository
 from model import Category, Item
-import material_db as db
 
 
-class MaterialDbService:
-    """Material service based on database."""
+class MaterialService:
+    def __init__(self, repository: Repository):
 
-    def __init__(self, database=None):
-
+        self.repository = repository
         self.recent_count = 5  # Max number of recently viewed categories to return.
         self.recent_days = 7  # Date range to look for recently viewed items, in days.
         self.batch_size = 5  # Max number of elements returned in a batch.
@@ -22,14 +22,6 @@ class MaterialDbService:
         self.same_day_count = (
             True  # Set whether should update views counter for the same day.
         )
-        if database is not None:
-            self.database = database  # database
-        else:
-            load_dotenv()
-            self.database = Path(
-                environ.get("database_path", "./"), environ.get("database", None)
-            )
-
         self.categories = []
 
         # # Load categories
@@ -46,22 +38,22 @@ class MaterialDbService:
     #         self.categories = [Category(dct) for dct in data]
 
     def get_info(self) -> tuple:
-        return db.get_info(self.database)
+        return self.repository.get_info()
 
-    def get_all_items(self):
-        """Retrieves all items in the database."""
-        return db.all_items(self.database)
+    def get_all_items(self) -> List[Item]:
+        """Retrieve all items in the database."""
+        return self.repository.all_items()
 
-    def get_item(self, id: int):
-        """Retrieves the item with the given id."""
-        items = db.get_item(self.database, id)
+    def get_item(self, item_id: int) -> Item:
+        """Retrieve the item with the given id."""
+        items = self.repository.get_item(item_id)
         return items[0] if len(items) > 0 else None
 
     def get_recent(self):
         """Get recently viewed categories"""
-        recent = db.get_recent(self.database, self.recent_days, self.recent_count)
+        recent = self.repository.get_recent(self.recent_count)
         ids = [x["Id"] for x in recent]
-        recent_items = db.get_recent_items(self.database, ids)
+        recent_items = self.repository.get_recent_items(ids)
         for category in recent:
             category["Items"] = [
                 item for item in recent_items if item["CategoryId"] == category["Id"]
@@ -111,27 +103,27 @@ class MaterialDbService:
         """Increases by one the count of views of every item in the batch"""
         try:
             sql_update_category_use = f"UPDATE Categories SET LastUse = '{dt.now().strftime('%Y/%m/%d')}' WHERE Id = {batch['Id']}"
-            db.run_sql(self.database, sql_update_category_use)
+            self.repository.run_script(sql_update_category_use)
             item_ids = [item["Id"] for item in batch["Items"]]
-            items = db.all_items(self.database)
+            items = self.repository.all_items()
             views = []
             for id in item_ids:
                 found = next((x for x in items if x["Id"] == id), None)
                 if found is not None:
                     views.append(found["Views"] + 1)
             updated_values = zip(views, item_ids)
-            db.update_views(self.database, updated_values)
+            self.repository.update_views(updated_values)
             return True
         except Exception as exception:
             print(f"Error: {exception.args}")
             return False
 
-    def create_database(self, database: str) -> None:
+    def create_database(self) -> None:
         # db.run_script(database, "material_database.sql")
-        db.run_script(self.database, "material_database.sql")
+        self.repository.run_script("material_database.sql")
 
-    def add_category(self, category: Category) -> None:
-        db.create_category(self.database, category)
+    def add_category(self, category: Category) -> int:
+        return self.repository.save_category(category)
 
     # def save_categories(self, dbjson):
     #     with open(dbjson, "w") as db:

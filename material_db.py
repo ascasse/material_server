@@ -29,11 +29,17 @@ def create_category(database, category: Category):
     try:
         with sqlite3.connect(database) as connection:
             cursor = connection.cursor()
-            last_use = "NULL"
+            last_use = None
             if category.last_view is not None:
                 last_use = f"'{category.last_view.strftime('%Y/%m/%d')}'"
-            sql = f"INSERT INTO Categories ('Name', 'LastUse') VALUES ('{category.name}', {last_use})"
-            cursor.execute(sql)
+            # sql = f"INSERT INTO Categories ('Name', 'LastUse') VALUES ('{category.name}', {category.last_view})"
+            # sql = "INSERT INTO Categories ('Name', 'LastUse') VALUES ('category.name', category.last_view)"
+            # sql = f"INSERT INTO Categories ('Name', 'LastUse') VALUES ('{category.name}', {last_use})"
+            entity = (category.name, category.last_view)
+            cursor.execute(
+                "INSERT INTO Categories ('Name', 'LastUse') VALUES (?, ?)", entity
+            )
+            # cursor.execute(sql)
             cursor.execute("commit")
 
             category_id = cursor.lastrowid

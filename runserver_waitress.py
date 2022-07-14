@@ -17,6 +17,9 @@ from flask import Flask, jsonify, make_response, abort, request
 from werkzeug.exceptions import HTTPException
 from flask_cors import CORS
 from dotenv import load_dotenv
+from material_service import MaterialService
+
+from sqlite_repository import SQLiteRepository
 from material_db_service import MaterialDbService
 from material_plugin import MaterialPlugin
 from plugin_loader import load_plugins
@@ -75,7 +78,11 @@ logger.info(f"Reading material from {BITS_PATH}.")
 
 database = Path(environ.get("database_path", "."), environ.get("database"))
 logger.info(f"Database: {database}")
-service = MaterialDbService(database)
+# service = MaterialDbService(database)
+
+# repository = SQLiteRepository("test_db.db3")
+repository = SQLiteRepository("material.db3")
+service = MaterialService(repository)
 
 blueprints = []
 plugins = load_plugins("plugins", MaterialPlugin)
