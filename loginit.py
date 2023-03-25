@@ -6,7 +6,11 @@ import logging.config as loggingconfig
 import logging.handlers
 from pathlib import Path
 
-log_file_path = Path(__file__).parent.joinpath('logger.conf')
-loggingconfig.fileConfig(log_file_path)
+def init_log():
+    ''' Initialize log'''
+    log_file_path = Path(__file__).parent.joinpath('logger.conf')
+    loggingconfig.fileConfig(log_file_path)
 
-logger = logging.getLogger('learning')
+    return logging.getLogger('learning')
+
+logger = init_log()

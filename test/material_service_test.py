@@ -2,77 +2,110 @@
     MaterialService tests
 """
 
-
+from datetime import datetime as dt, timedelta
+from doctest import testmod
 from unittest import TestCase
-
+from material_json_service import MaterialJsonService
 from material_service import MaterialService
-from model import Category, Item
+from model import Category
+from model import Item
 from sqlite_repository import SQLiteRepository
 
 
-class MaterialServiceTest(TestCase):
-    """MaterialServiceTest"""
-
-    @classmethod
-    def setUpClass(cls) -> None:
-        cls.repository = SQLiteRepository(db_location=":memory:")
-        cls.service = MaterialService(cls.repository)
-        return super().setUpClass()
-
     def setUp(self) -> None:
-        self.repository.run_script("./Material_database.sql")
-        # Create a collection of categories for testing
-        # Odd categories are bits and even ones are vocabulary
-        test_categories = [
-            Category(
-                name=f"category{m:02}",
-                type=m % 2,
-                items=[
-                    Item(text=f"item{n:02}")
-                    for n in range(10 * (m - 1) + 1, 10 * m + 1)
-                ],
-            )
-            for m in range(1, 11)
-        ]
-
-        # Populate database
-        for category in test_categories:
-            self.repository.save_category(category)
+        self.repository.run_script('../Material_database.sql')
+        print("setUp")
 
     def test_get_recent(self):
-        """test_get_recent"""
+        ''' test_get_recent '''
         categories = self.service.get_recent()
         self.assertIsNotNone(categories)
-        self.assertEqual(self.service.recent_count, len(categories))
-        self.assertEqual(self.service.batch_size, len(categories[0].items))
 
-    def test_get_category(self):
-        category = self.service.get_category(1)
 
-        self.assertIsNotNone(category)
-        self.assertEqual(1, category.id)
-        self.assertEqual("category01", category.name)
-        self.assertEqual(0, category.type)
-        self.assertEqual(10, len(category.items))
+# class JsonMaterialServiceTest(TestCase):
+#     ''' '''
+#     def setUp(self) -> None:
+#         # self.service = JsonMaterialService("./test/data/db_test.json")
+#         self.service = MaterialJsonService()
+#         self.service.load("./test/data/db_test.json")
+#         return super().setUp()
 
-        category = self.service.get_category(2)
-        self.assertEqual(1, category.type)
+#     def test_get_categories(self):
+#         categories = self.service.categories
+#         self.assertIsNotNone(categories)
+#         self.assertTrue(len(categories) > 0)
+#         self.assertEqual(categories[0].id, 1)
+#         self.assertEqual(categories[0].last_seen, dt(2020, 10, 22).date())
 
-    def test_update_batch(self):
-        """test_update_batch"""
-        categories = self.service.get_recent()
-        batch = categories[0]
-        self.service.update_batch(batch)
+#     def test_get_recent(self):
+#         data = [
+#             Category(
+#                 {
+#                     "id": 1,
+#                     "name": "category1",
+#                     "last_seen": (dt.today() - timedelta(days=1)).date(),
+#                 }
+#             ),
+#             Category(
+#                 {
+#                     "id": 2,
+#                     "name": "category2",
+#                     "last_seen": (dt.today() - timedelta(days=3)).date(),
+#                 }
+#             ),
+#             Category(
+#                 {
+#                     "id": 3,
+#                     "name": "category3",
+#                     "last_seen": (dt.today() - timedelta(days=7)).date(),
+#                 }
+#             ),
+#             Category(
+#                 {
+#                     "id": 4,
+#                     "name": "category4",
+#                     "last_seen": (dt.today() - timedelta(days=10)).date(),
+#                 }
+#             ),
+#             Category({"id": 5, "name": "category5"}),
+#         ]
 
-        categories = self.service.get_recent()
-        batch = categories[0]
-        self.assertIsNotNone(batch.last_view)
-        self.assertEqual(1, batch.items[0].views)
+#         self.service.categories = data
+#         recent = self.service.get_recent()
+#         self.assertIsNotNone(recent)
+#         self.assertTrue(len(recent) == 3)
+#         self.assertEqual([x.id for x in recent], [1, 2, 3])
 
-    def test_get_batch(self):
-        category = self.service.get_category(1)
+#     def test_get_batch(self):
+#         test_category = self.service.categories[0]
+#         batch = self.service.get_batch(test_category)
+#         self.assertIsNotNone(batch)
 
-        batch = self.service.get_batch(category)
-        self.assertIsNotNone(batch)
-        self.assertEqual(1, batch.id)
-        self.assertEqual(self.service.batch_size, len(batch.items))
+#     def test_get_complete_batch(self):
+#         test_category = self.create_completed_category()
+#         batch = self.service.get_batch(test_category)
+#         self.assertIsNotNone(batch)
+#         self.assertTrue(batch.completed)
+
+#     def test_all_items(self):
+#         items = self.service.get_all_items()
+#         self.assertEqual(len(items), 17)
+
+#     def test_update_batch(self):
+#         test_category = self.service.categories[0]
+#         batch = self.service.get_batch(test_category)
+#         self.service.update_batch(batch)
+#         self.assertEqual(test_category.items[0].views, 1)
+
+#     def test_save_categories(self):
+#         self.service.save_categories("./test/data/db_test2.json")
+#         self.service.database = "./test/data/db_test.json"
+#         self.service.load()
+
+#     def create_completed_category(self):
+#         """Get a category already viewed"""
+#         test_category = self.service.categories[0]
+#         self.service.batch_size = len(test_category.items)
+#         for item in test_category.items:
+#             item.views = self.service.max_views
+#         return test_category

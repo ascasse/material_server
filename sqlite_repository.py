@@ -108,6 +108,7 @@ class SQLiteRepository(Repository):
         self.cur.execute(cmd)
 
     def execute_sql_select(self, sql: str) -> dict:
+        ''' Run a SELECT statement '''
         try:
             cur = self.__db_connection.cursor()
             rows = cur.execute(sql)
