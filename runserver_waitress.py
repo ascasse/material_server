@@ -9,6 +9,7 @@ import logging.config
 import pkgutil
 import inspect
 
+
 from os import environ, strerror
 from waitress import serve
 from importlib import import_module
@@ -18,7 +19,7 @@ from werkzeug.exceptions import HTTPException
 from flask_cors import CORS
 from dotenv import load_dotenv
 from material_service import MaterialService
-
+from loginit import logger
 from sqlite_repository import SQLiteRepository
 from material_db_service import MaterialDbService
 from material_plugin import MaterialPlugin
@@ -26,7 +27,8 @@ from plugin_loader import load_plugins
 from api.books.books_api import books_api, loader
 from api.questions.qa_api import qa_api
 
-logger = logging.getLogger(__name__)
+
+# logger = logging.getLogger(__name__)
 
 verboseprint = lambda *args, **kargs: None
 verboseprint = print
@@ -81,7 +83,7 @@ logger.info(f"Database: {database}")
 # service = MaterialDbService(database)
 
 # repository = SQLiteRepository("test_db.db3")
-repository = SQLiteRepository("material.db3")
+repository = SQLiteRepository(database)
 service = MaterialService(repository)
 
 blueprints = []
@@ -110,31 +112,6 @@ def get_recent_categories():
     response.content_type = "application/json"
     response.charset = "utf-8"
     return response
-
-
-# @app.route("/categories")
-# def get_categories():
-#     logger.info("Get categories")
-#     json_string = json.dumps(
-#         generator.categories, default=category_encoder, ensure_ascii=False
-#     ).encode("utf-8")
-#     response = make_response(json_string.decode("utf-8"))
-#     response.content_type = "application/json"
-#     response.charset = "utf-8"
-#     return response
-
-
-# @app.route("/categories/<int:category_id>")
-# def get_category(category_id):
-#     """Return category images"""
-#     category = generator.get_category(category_id)
-#     if category is None:
-#         abort(404)
-#     response = make_response(
-#         json.dumps(category, default=category_encoder, ensure_ascii=False)
-#     )
-#     response.content_type = "application/json"
-#     return response
 
 
 @app.route("/image/<int:img_id>")
@@ -276,5 +253,7 @@ def handle_exception(exception):
 if __name__ == "__main__":
     # app.run(port=5050)
     # serve(app, host="192.168.1.57", port=5000)
+    waitress_log = logging.getLogger('waitress')
+    waitress_log.setLevel(logging.DEBUG)
     serve(app, port=5050)
     # serve(app, port=5000)
