@@ -20,7 +20,11 @@ class SQLiteRepository(Repository):
     def __init__(self, db_location=None):
         """Initialize db class variables"""
         if db_location is not None:
-            self.__db_connection = sqlite3.connect(db_location, check_same_thread=False)
+            self.__db_connection = sqlite3.connect(
+                db_location,
+                check_same_thread=False,
+                detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES,
+            )
         else:
             self.__db_connection = sqlite3.connect(
                 self.__DB_LOCATION, check_same_thread=False
@@ -51,8 +55,16 @@ class SQLiteRepository(Repository):
         sql = f"SELECT * FROM Items WHERE CategoryId IN ({','.join([str(id) for id in ids])})"
         return self.execute_sql_select(sql)
 
+    def get_items(self, ids: List[int]):
+        sql = f"SELECT * FROM Items WHERE Id IN ({','.join([str(id) for id in ids])})"
+        return self.execute_sql_select(sql)
+
     def get_item(self, item_id: int):
         sql = f"SELECT * FROM Items WHERE Id = {item_id}"
+        return self.execute_sql_select(sql)
+
+    def get_category(self, category_id: int):
+        sql = f"SELECT c.Id as c_id, Name, c.LastUse as c_LastUse, it.Id as it_id, * FROM Categories c JOIN items it ON it.CategoryId = c.id WHERE c.id = {category_id}"
         return self.execute_sql_select(sql)
 
     def save_category(self, category: Category) -> int:
@@ -84,9 +96,16 @@ class SQLiteRepository(Repository):
         self.commit()
         return category_id
 
+    def mark_category_completed(self, category_id):
+        sql = f"UPDATE Categories SET Completed = 1 WHERE Id = {category_id}"
+        self.cur.execute(sql)
+
     def execute(self, cmd, new_data):
         """execute a row of data to current cursor"""
         self.cur.execute(cmd, new_data)
+
+    def execute_statement(self, cmd):
+        self.cur.execute(cmd)
 
     def execute_sql_select(self, sql: str) -> dict:
         try:
@@ -101,10 +120,9 @@ class SQLiteRepository(Repository):
             print(f"Error: {db_error.args[0]}")
             raise
 
-    # def executemany(self, many_new_data):
-    #     """add many new data to database in one go"""
-    #     self.create_table()
-    #     self.cur.executemany("REPLACE INTO jobs VALUES(?, ?, ?, ?)", many_new_data)
+    def execute_many(self, cmd, many_new_data):
+        """update many data to database in one go"""
+        self.cur.executemany(cmd, many_new_data)
 
     def all_table_content(self, table: str):
         """Retrieve the content of the given table"""

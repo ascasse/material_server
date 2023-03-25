@@ -1,7 +1,7 @@
 """ Abstract class for repositories """
 from abc import ABC, abstractmethod
 from typing import List
-from model import Category
+from model import Category, Item
 
 
 class Repository(ABC):
@@ -33,6 +33,10 @@ class Repository(ABC):
     def get_recent_items(self, ids: List[int]):
         pass
 
+    # @abstractmethod
+    # def get_category(self, category_id: int) -> Category:
+    #     pass
+
     @abstractmethod
-    def get_item(self, item_id: int):
+    def get_item(self, item_id: int) -> Item:
         pass

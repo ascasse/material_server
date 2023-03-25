@@ -1,0 +1,45 @@
+muebles	silla
+muebles	sofá
+muebles	estantería
+muebles	sillón
+muebles	lámpara
+muebles	armario
+muebles	cama
+muebles	cómoda
+muebles	mesilla
+muebles	cajonera
+familia	madre
+familia	hijo
+familia,hija
+familia,hermano
+familia,tío
+familia,sobrino
+familia,abuela
+familia,primo
+familia,papá
+familia,mamá
+habitaciones,dormitorio
+habitaciones,cocina
+habitaciones,entrada
+habitaciones,cuarto de baño
+habitaciones,pasillo
+comidas,comida
+comidas,cena
+comidas,merienda
+comidas,aperitivo
+comidas,almuerzo
+comidas,desayuno
+cubiertos,tenedor
+cubiertos,cuchara
+cubiertos,cuchillo
+cubiertos,cucharilla
+cubiertos,pala de pescado
+ropa,calcetines
+ropa,top
+ropa,pantalones
+ropa,braguitas
+ropa,sudadera
+ropa,vaqueros
+ropa,abrigo
+ropa,gorro
+ropa,bufanda

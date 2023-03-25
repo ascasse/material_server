@@ -21,6 +21,8 @@ from dotenv import load_dotenv
 from material_plugin import MaterialPlugin
 from generator import Generator
 from model_old import category_encoder
+from sqlite_repository import SQLiteRepository
+from material_service import MaterialService
 import loginit
 
 from plugin_loader import load_plugins
@@ -71,11 +73,11 @@ BITS_PATH = Path(MATERIAL).joinpath("bits")
 logger.info(f"Reading material from {MATERIAL}.")
 
 # Initialize database
-# try:
-#     generator = Generator(BITS_PATH)
-# except FileNotFoundError:
-#     print(f"{strerror(errno.ENOENT)}: {BITS_PATH}")
-#     exit("No data available")
+try:
+    generator = MaterialService(SQLiteRepository())
+except FileNotFoundError:
+    print(f"{strerror(errno.ENOENT)}: {BITS_PATH}")
+    exit("No data available")
 
 blueprints = []
 plugins = load_plugins("plugins", MaterialPlugin)
@@ -96,7 +98,7 @@ for blueprint in blueprints:
 def get_categories():
     logger.info("Get categories")
     json_string = json.dumps(
-        generator.categories, default=category_encoder, ensure_ascii=False
+        generator.all_categories(), default=category_encoder, ensure_ascii=False
     ).encode("utf-8")
     response = make_response(json_string.decode("utf-8"))
     response.content_type = "application/json"

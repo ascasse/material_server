@@ -19,10 +19,12 @@ class Item:
 class Category:
     """Container for a group of related items."""
 
-    name: str
+    name: str = field()
     items: List = field(default_factory=list)
-    last_view: datetime.datetime = None
-    id: int = 0
+    last_view: datetime.datetime = field(default=None)
+    completed: bool = False
+    type: int = 0
+    id: int = field(default=0)
 
 
 @dataclass

@@ -1,5 +1,6 @@
 {
     "python.linting.pylintEnabled": true,
+    "python.linting.lintOnSave": true,
     "python.linting.flake8Enabled": false,
     "python.formatting.provider": "black",
     "python.autoComplete.extraPaths": [
@@ -14,15 +15,16 @@
     ],
     "python.testing.pytestEnabled": false,
     "python.testing.unittestEnabled": true,
-    "json.schemas": [{
-        "fileMatch": [
-            "categorydb.json"
-        ],
-        "schema":true,
-        "url": "./data/categorydb_schema.json"
-    }
-],
-"python.analysis.extraPaths": [
-    "./plugins/vocabulary"
-]
+    "json.schemas": [
+        {
+            "fileMatch": [
+                "categorydb.json"
+            ],
+            "schema":true,
+            "url": "./data/categorydb_schema.json"
+        }
+    ],
+    "python.analysis.extraPaths": [
+        "./plugins/vocabulary",
+    ]
 }

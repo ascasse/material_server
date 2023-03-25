@@ -2,12 +2,12 @@ import datetime as dt
 import unittest
 from model import Category, Item
 
-from sqlite_repository import Repository
+from sqlite_repository import SQLiteRepository
 
 
 class RepositoryTest(unittest.TestCase):
     def setUp(self):
-        self.repository = Repository(":memory:")
+        self.repository = SQLiteRepository(":memory:")
         self.repository.run_script("Material_database.sql")
 
     def test_all_categories(self):

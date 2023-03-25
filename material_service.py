@@ -1,13 +1,14 @@
 """
     Material service
 """
+from copy import deepcopy
+from dataclasses import fields
 from datetime import datetime as dt
-from os import environ
-from dotenv.main import load_dotenv
-from pathlib import Path
+
 from typing import List
-from repository import Repository
+
 from model import Category, Item
+from repository import Repository
 
 
 class MaterialService:
@@ -24,19 +25,6 @@ class MaterialService:
         )
         self.categories = []
 
-        # # Load categories
-        # with open(database, "r") as db:
-        #     data = json.load(db)
-        #     self.categories = [Category(dct) for dct in data]
-
-    # def load(self):
-    #     with open(self.database, "r") as db:
-    #         data = json.load(db)
-    #         self.categories = []
-    #         for dct in data:
-    #             self.categories.add(Category(dct["id"]))
-    #         self.categories = [Category(dct) for dct in data]
-
     def get_info(self) -> tuple:
         return self.repository.get_info()
 
@@ -49,26 +37,62 @@ class MaterialService:
         items = self.repository.get_item(item_id)
         return items[0] if len(items) > 0 else None
 
+    def get_category(self, category_id: int) -> Category:
+        """Retrieve the category with the given id."""
+        rows = self.repository.get_category(category_id)
+        category = Category(
+            id=category_id, name=rows[0]["Name"], last_view=rows[0]["c_LastUse"]
+        )
+        category.items = [
+            Item(
+                id=r["it_id"],
+                image=r["Image"],
+                last_view=r["LastUse"],
+                text=r["Text"],
+                views=r["Views"],
+                type=r
+            )
+            for r in rows
+        ]
+        return category
+
     def get_recent(self):
         """Get recently viewed categories"""
-        recent = self.repository.get_recent(self.recent_count)
-        ids = [x["Id"] for x in recent]
+        recent_dict = self.repository.get_recent(self.recent_count)
+        recent = [self.map_to_category(rec) for rec in recent_dict]
+
+        # Load items for selected categories
+        ids = [x.id for x in recent]
         recent_items = self.repository.get_recent_items(ids)
         for category in recent:
-            category["Items"] = [
-                item for item in recent_items if item["CategoryId"] == category["Id"]
+            category.items = [
+                self.map_to_item(item)
+                for item in recent_items
+                if item["CategoryId"] == category.id
             ]
-        return recent
+
+        batches = [self.get_batch(category) for category in recent]
+        return batches
+
+        # return recent
 
     def get_batch(self, category: Category):
         """Build a new batch from the given category"""
-        batch = Category(category.name, category.items)
+
+        batch = deepcopy(category)
+        # batch = Category(
+        #     id=category.id,
+        #     name=category.name,
+        #     items=category.items,
+        #     last_view=category.last_view,
+        # )
 
         # Look for elements that have not reached max_views
-        to_view = [item for item in category.items if item.views < self.max_views]
+        to_view = self.to_view_items(batch)
         # All elements have reached max_views. Mark as completed and terminate
         if not to_view:
             batch.completed = True
+            self.repository.mark_category_completed(category.id)
             return batch
 
         # Category has less or equal number of elements than batch size. The batch will be
@@ -102,21 +126,30 @@ class MaterialService:
     def update_batch(self, batch):
         """Increases by one the count of views of every item in the batch"""
         try:
-            sql_update_category_use = f"UPDATE Categories SET LastUse = '{dt.now().strftime('%Y/%m/%d')}' WHERE Id = {batch['Id']}"
-            self.repository.run_script(sql_update_category_use)
-            item_ids = [item["Id"] for item in batch["Items"]]
-            items = self.repository.all_items()
-            views = []
-            for id in item_ids:
-                found = next((x for x in items if x["Id"] == id), None)
-                if found is not None:
-                    views.append(found["Views"] + 1)
-            updated_values = zip(views, item_ids)
-            self.repository.update_views(updated_values)
+            last_use = dt.now()
+            sql_update_category_use = (
+                f"UPDATE Categories SET LastUse = '{last_use}' WHERE Id = {batch.id}"
+            )
+            self.repository.execute_statement(sql_update_category_use)
+
+            item_ids = [item.id for item in batch.items]
+            views = [item.views + 1 for item in batch.items]
+            updated_values = list(zip(views, item_ids))
+
+            sql = f"UPDATE Items SET LastUse = '{last_use}', Views = ? WHERE Id = ?"
+            self.repository.execute_many(sql, updated_values)
+            self.repository.commit()
             return True
+        except AttributeError as attr_error:
+            print(f"Attribute error: {attr_error.name}")
+            return False
         except Exception as exception:
             print(f"Error: {exception.args}")
             return False
+
+    def to_view_items(self, category: Category) -> List[Item]:
+        """Return items in the category that have not yet reached max_views"""
+        return [item for item in category.items if item.views < self.max_views]
 
     def create_database(self) -> None:
         # db.run_script(database, "material_database.sql")
@@ -125,6 +158,19 @@ class MaterialService:
     def add_category(self, category: Category) -> int:
         return self.repository.save_category(category)
 
-    # def save_categories(self, dbjson):
-    #     with open(dbjson, "w") as db:
-    #         json.dump(self.categories, db, cls=CategoryEncoder)
+    def map_from_dictionary(self, class_name, dictionary):
+        class_fields = {f.name for f in fields(class_name) if f.init}
+        args = {k: v for k, v in dictionary.items() if k in class_fields}
+        return class_name(**args)
+
+    def map_to_category(self, dct: dict) -> Category:
+        return Category(name=dct["Name"], last_view=dct["LastUse"], id=dct["Id"])
+
+    def map_to_item(self, dct: dict) -> Item:
+        return Item(
+            text=dct["Text"],
+            last_view=dct["LastUse"],
+            views=dct["Views"],
+            image=dct["Image"],
+            id=dct["Id"],
+        )

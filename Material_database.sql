@@ -7,7 +7,7 @@ CREATE TABLE "Items"
 (
 	"Id" INTEGER NOT NULL,
 	"Text" TEXT NOT NULL,
-	"LastUse" TEXT,
+	"LastUse" TIMESTAMP,
 	"Views" INTEGER DEFAULT 0,
 	"Image" TEXT,
 	"CategoryId" INTEGER,
@@ -19,7 +19,8 @@ CREATE TABLE "Categories"
 (
 	"Id" INTEGER NOT NULL,
 	"Name" TEXT UNIQUE NOT NULL,
-	"LastUse" TEXT DEFAULT NULL,
+	"LastUse" TIMESTAMP DEFAULT NULL,
+	"Completed" INTEGER DEFAULT 0,
 	PRIMARY KEY("Id")
 );
 

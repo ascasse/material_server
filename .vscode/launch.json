@@ -10,6 +10,16 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal"
-        }
-    ]
+        },
+        {
+            "name": "Python: Current File with args",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "args": ["e:/Material/Bits", "material.db3"],
+            "console": "integratedTerminal"
+        },
+
+    ],
+    "env": {"PYTHONPATH": "${workspaceRoot}"}
 }
