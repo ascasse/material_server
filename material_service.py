@@ -50,7 +50,6 @@ class MaterialService:
                 last_view=r["LastUse"],
                 text=r["Text"],
                 views=r["Views"],
-                type=r
             )
             for r in rows
         ]
@@ -141,7 +140,7 @@ class MaterialService:
             self.repository.commit()
             return True
         except AttributeError as attr_error:
-            print(f"Attribute error: {attr_error.name}")
+            print(f"Attribute error: {attr_error.args}")
             return False
         except Exception as exception:
             print(f"Error: {exception.args}")

@@ -15,6 +15,7 @@ from waitress import serve
 from importlib import import_module
 from pathlib import Path
 from flask import Flask, jsonify, make_response, abort, request
+from flask.json import JSONEncoder
 from werkzeug.exceptions import HTTPException
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -111,6 +112,17 @@ def get_recent_categories():
     response = make_response(json_string.decode("utf-8"))
     response.content_type = "application/json"
     response.charset = "utf-8"
+    return response
+
+
+@app.route("/categories/<int:category_id>")
+def get_category(category_id):
+    """Return category images"""
+    category = service.get_category(category_id)
+    if category is None:
+        abort(404)
+    response = make_response(json.dumps(category, cls=JSONEncoder, ensure_ascii=False))
+    response.content_type = "application/json"
     return response
 
 
@@ -253,7 +265,7 @@ def handle_exception(exception):
 if __name__ == "__main__":
     # app.run(port=5050)
     # serve(app, host="192.168.1.57", port=5000)
-    waitress_log = logging.getLogger('waitress')
+    waitress_log = logging.getLogger("waitress")
     waitress_log.setLevel(logging.DEBUG)
-    serve(app, port=5050)
+    serve(app, host="0.0.0.0", port=5050)
     # serve(app, port=5000)

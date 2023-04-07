@@ -11,25 +11,27 @@ class ModelTest(unittest.TestCase):
 
     def test_create_category_no_date(self):
         category = Category(dict(id="1", name="test"))
-        self.assertIsNone(category.__getattribute__("lastseen"))
+        self.assertIsNone(category.lastseen)
         self.assertEqual(len(category.items), 0)
 
     def test_create_category_invalid_date(self):
         category = Category(dict(id="1", name="test", lastseen="112abc"))
-        self.assertIsNone(category.__getattribute__("lastseen"))
+        self.assertIsNone(category.lastseen)
         self.assertEqual(len(category.items), 0)
 
     def test_create_category_string_date(self):
-        category = Category(dict(id="1", name="test", lastseen="2020/10/05"))
-        lastseen = category.__getattribute__("lastseen")
+        category = Category({"id": "1", "name": "test", "lastseen": "2020/10/05"})
+        lastseen = category.lastseen
         self.assertEqual(lastseen.year, 2020)
         self.assertEqual(lastseen.month, 10)
         self.assertEqual(lastseen.day, 5)
         self.assertEqual(len(category.items), 0)
 
     def test_create_category(self):
-        category = Category(dict(id="1", name="test", lastseen=datetime(2020, 10, 5)))
-        self.assertIsNotNone(category.__getattribute__("lastseen"))
+        category = Category(
+            {"id": "1", "name": "test", "lastseen": datetime(2020, 10, 5)}
+        )
+        self.assertIsNotNone(category.lastseen)
         self.assertEqual(len(category.items), 0)
 
     # def test_group_decoder(self):

@@ -12,14 +12,15 @@ from model import Item
 from sqlite_repository import SQLiteRepository
 
 
-    def setUp(self) -> None:
-        self.repository.run_script('../Material_database.sql')
-        print("setUp")
+def setUp(self) -> None:
+    self.repository.run_script("../Material_database.sql")
+    print("setUp")
 
-    def test_get_recent(self):
-        ''' test_get_recent '''
-        categories = self.service.get_recent()
-        self.assertIsNotNone(categories)
+
+def test_get_recent(self):
+    """test_get_recent"""
+    categories = self.service.get_recent()
+    self.assertIsNotNone(categories)
 
 
 # class JsonMaterialServiceTest(TestCase):

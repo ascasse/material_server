@@ -2,6 +2,7 @@
 import datetime
 from dataclasses import dataclass, field
 from typing import List
+import inspect
 
 
 @dataclass
@@ -43,3 +44,12 @@ class ItemDb:
             None if item.last_view is None else item.last_view.strftime("%Y/%m/%d")
         )
         self.id = item.id
+
+
+def from_dict(cls, data):
+    return cls(
+        **{
+            key: (data[key] if val.default == val.empty else data.get(key, val.default))
+            for key, val in inspect.signature(cls).parameters.items()
+        }
+    )
