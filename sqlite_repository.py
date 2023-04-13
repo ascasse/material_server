@@ -39,8 +39,11 @@ class SQLiteRepository(Repository):
     def all_categories(self) -> List[dict]:
         """Retrieve all the categories."""
         self.__db_connection.row_factory = sqlite3.Row
-        rows = self.__db_connection.execute("select * from categories")
-        return [row for row in rows]
+        # rows = self.__db_connection.execute("select * from categories")
+        rows = self.__db_connection.execute(
+            "SELECT c.Id as c_id, Name, c.LastUse as c_LastUse, it.Id as it_id, * FROM Categories c JOIN items it ON it.CategoryId = c.id"
+        )
+        return rows
 
     def all_items(self) -> List[dict]:
         """Retrieve all the items."""
@@ -108,7 +111,7 @@ class SQLiteRepository(Repository):
         self.cur.execute(cmd)
 
     def execute_sql_select(self, sql: str) -> dict:
-        ''' Run a SELECT statement '''
+        """Run a SELECT statement"""
         try:
             cur = self.__db_connection.cursor()
             rows = cur.execute(sql)

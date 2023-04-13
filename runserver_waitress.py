@@ -115,6 +115,17 @@ def get_recent_categories():
     return response
 
 
+@app.route("/categories")
+def all_categories():
+    logger.info("all_categories")
+    categories = service.get_all_categories()
+    json_string = json.dumps(categories, cls=JSONEncoder, ensure_ascii=False)
+    response = make_response(json_string)
+    response.content_type = "application/json"
+    response.charset = "utf-8"
+    return response
+
+
 @app.route("/categories/<int:category_id>")
 def get_category(category_id):
     """Return category images"""

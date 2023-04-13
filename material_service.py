@@ -28,6 +28,14 @@ class MaterialService:
     def get_info(self) -> tuple:
         return self.repository.get_info()
 
+    def get_all_categories(self) -> List[Category]:
+        """Retrieve all categories in the database."""
+        categories = []
+        rows = self.repository.all_categories()
+        for row in rows:
+            categories.append(self.category_from_row(row))
+        return categories
+
     def get_all_items(self) -> List[Item]:
         """Retrieve all items in the database."""
         return self.repository.all_items()
@@ -74,6 +82,20 @@ class MaterialService:
         return batches
 
         # return recent
+
+    def category_from_row(self, row):
+        category = Category(id=row["Id"], name=row["Name"], last_view=row["LastUse"])
+        # category.items = [
+        #     Item(
+        #         id=r["it_id"],
+        #         image=r["Image"],
+        #         last_view=r["LastUse"],
+        #         text=r["Text"],
+        #         views=r["Views"],
+        #     )
+        #     for r in rows
+        # ]
+        return category
 
     def get_batch(self, category: Category):
         """Build a new batch from the given category"""
