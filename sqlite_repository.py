@@ -39,9 +39,14 @@ class SQLiteRepository(Repository):
     def all_categories(self) -> List[dict]:
         """Retrieve all the categories."""
         self.__db_connection.row_factory = sqlite3.Row
-        # rows = self.__db_connection.execute("select * from categories")
+        rows = self.__db_connection.execute("select * from categories")
+        return rows
+
+    def all_categories2(self) -> List[dict]:
+        """Retrieve all the categories."""
+        self.__db_connection.row_factory = sqlite3.Row
         rows = self.__db_connection.execute(
-            "SELECT c.Id as c_id, Name, c.LastUse as c_LastUse, it.Id as it_id, * FROM Categories c JOIN items it ON it.CategoryId = c.id"
+            "SELECT c.Id as c_id, Name, c.LastUse as c_LastUse, it.Id as it_id, it.Text FROM Categories c JOIN items it ON it.CategoryId = c.Id"
         )
         return rows
 

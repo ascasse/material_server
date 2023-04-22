@@ -14,7 +14,7 @@ from os import environ, strerror
 from waitress import serve
 from importlib import import_module
 from pathlib import Path
-from flask import Flask, jsonify, make_response, abort, request
+from flask import Flask, jsonify, make_response, abort, request, Response
 from flask.json import JSONEncoder
 from werkzeug.exceptions import HTTPException
 from flask_cors import CORS
@@ -118,8 +118,30 @@ def get_recent_categories():
 @app.route("/categories")
 def all_categories():
     logger.info("all_categories")
+    categories = service.get_all_complete_categories()
+    json_string = json.dumps(categories, cls=JSONEncoder, ensure_ascii=False)
+    response = make_response(json_string)
+    response.content_type = "application/json"
+    response.charset = "utf-8"
+    return response
+
+
+@app.route("/categories2")
+def all_categories2():
+    logger.info("all_categories")
     categories = service.get_all_categories()
     json_string = json.dumps(categories, cls=JSONEncoder, ensure_ascii=False)
+    response = make_response(json_string)
+    response.content_type = "application/json"
+    response.charset = "utf-8"
+    return response
+
+
+@app.route("/items")
+def all_items():
+    logger.info("all_items")
+    items = service.get_all_items()
+    json_string = json.dumps(items, cls=JSONEncoder, ensure_ascii=False)
     response = make_response(json_string)
     response.content_type = "application/json"
     response.charset = "utf-8"

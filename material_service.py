@@ -38,7 +38,11 @@ class MaterialService:
 
     def get_all_items(self) -> List[Item]:
         """Retrieve all items in the database."""
-        return self.repository.all_items()
+        items = []
+        rows = self.repository.all_items()
+        for row in rows:
+            items.append(self.item_from_row(row))
+        return items
 
     def get_item(self, item_id: int) -> Item:
         """Retrieve the item with the given id."""
@@ -63,6 +67,14 @@ class MaterialService:
         ]
         return category
 
+    def get_all_complete_categories(self):
+        ctgs = self.get_all_categories()
+        category_ids = [category.id for category in ctgs]
+        categories = []
+        for category_id in category_ids:
+            categories.append(self.get_category(category_id))
+        return categories
+
     def get_recent(self):
         """Get recently viewed categories"""
         recent_dict = self.repository.get_recent(self.recent_count)
@@ -85,17 +97,17 @@ class MaterialService:
 
     def category_from_row(self, row):
         category = Category(id=row["Id"], name=row["Name"], last_view=row["LastUse"])
-        # category.items = [
-        #     Item(
-        #         id=r["it_id"],
-        #         image=r["Image"],
-        #         last_view=r["LastUse"],
-        #         text=r["Text"],
-        #         views=r["Views"],
-        #     )
-        #     for r in rows
-        # ]
         return category
+
+    def item_from_row(self, row):
+        item = Item(
+            id=row["Id"],
+            text=row["Text"],
+            views=row["Views"],
+            last_view=row["LastUse"],
+            image=row["Image"],
+        )
+        return item
 
     def get_batch(self, category: Category):
         """Build a new batch from the given category"""

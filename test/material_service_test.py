@@ -12,15 +12,17 @@ from model import Item
 from sqlite_repository import SQLiteRepository
 
 
-def setUp(self) -> None:
-    self.repository.run_script("../Material_database.sql")
-    print("setUp")
+class MaterialServiceTest(TestCase):
+    def __init__(self):
+        super().__init__(self)
+        repository = SQLiteRepository(":memory:")
+        repository
+        self.service = MaterialService(repository)
 
-
-def test_get_recent(self):
-    """test_get_recent"""
-    categories = self.service.get_recent()
-    self.assertIsNotNone(categories)
+    def test_get_recent(self):
+        """test_get_recent"""
+        categories = self.service.get_recent()
+        self.assertIsNotNone(categories)
 
 
 # class JsonMaterialServiceTest(TestCase):

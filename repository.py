@@ -10,6 +10,10 @@ class Repository(ABC):
         pass
 
     @abstractmethod
+    def all_categories2(self) -> List[dict]:
+        pass
+
+    @abstractmethod
     def all_items(self) -> List[dict]:
         pass
 
