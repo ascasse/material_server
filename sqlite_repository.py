@@ -17,6 +17,12 @@ class SQLiteRepository(Repository):
     # Default database location
     __DB_LOCATION = "./repository.db3"
 
+    # Select category
+    __SELECT_CATEGORIES = (
+        "SELECT c.Id AS c_Id, Name, c.LastUse AS c_LastUse, Type, it.Id, Text, Views, Image, it.LastUse "
+        + "FROM Categories c join Items it on c.Id = it.CategoryId"
+    )
+
     def __init__(self, db_location=None):
         """Initialize db class variables"""
         if db_location is not None:
@@ -39,14 +45,14 @@ class SQLiteRepository(Repository):
     def all_categories(self) -> List[dict]:
         """Retrieve all the categories."""
         self.__db_connection.row_factory = sqlite3.Row
-        rows = self.__db_connection.execute("select * from categories")
+        rows = self.__db_connection.execute("SELECT * FROM Categories")
         return rows
 
     def all_categories2(self) -> List[dict]:
         """Retrieve all the categories."""
         self.__db_connection.row_factory = sqlite3.Row
         rows = self.__db_connection.execute(
-            "SELECT c.Id as c_id, Name, c.LastUse as c_LastUse, it.Id as it_id, it.Text FROM Categories c JOIN items it ON it.CategoryId = c.Id"
+            "SELECT * FROM Categories c JOIN items it ON it.Id = c.Id"
         )
         return rows
 
@@ -73,7 +79,8 @@ class SQLiteRepository(Repository):
 
     def category(self, category_id: int):
         # sql = f"SELECT c.Id as c_id, Name, c.LastUse as c_LastUse, it.Id as it_id, * FROM Categories c JOIN items it ON it.CategoryId = c.id WHERE c.id = {category_id}"
-        sql = f"SELECT * FROM Categories c JOIN items it ON it.CategoryId = c.id WHERE c.id = {category_id}"
+        # sql = f"SELECT * FROM Categories c JOIN items it ON it.CategoryId = c.id WHERE c.id = {category_id}"
+        sql = f"select c.Id as c_Id, Name, c.LastUse as c_LastUse, Type, it.Id, Text, Views, Image, it.LastUse from Categories c join Items it on c.Id = it.CategoryId Where c.Id = {category_id}"
         return self.execute_sql_select(sql)
 
     def save_category(self, category: Category) -> int:

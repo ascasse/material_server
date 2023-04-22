@@ -53,23 +53,41 @@ class MaterialService:
         """Retrieve the category with the given id."""
         rows = self.repository.category(category_id)
         category = Category(
-            id=category_id, name=rows[0]["Name"], last_view=rows[0]["LastUse"]
+            Id=category_id, Name=rows[0]["Name"], LastUse=rows[0]["c_LastUse"]
         )
-        category.items = [
+        category.Items = [
             Item(
-                id=r["Id"],
-                image=r["Image"],
-                last_view=r["LastUse"],
-                text=r["Text"],
-                views=r["Views"],
+                Id=r["Id"],
+                Image=r["Image"],
+                LastUse=r["LastUse"],
+                Text=r["Text"],
+                Views=r["Views"],
             )
             for r in rows
         ]
         return category
 
+    # def get_category(self, category_id: int) -> Category:
+    #     """Retrieve the category with the given id."""
+    #     rows = self.repository.category(category_id)
+    #     category = Category(
+    #         Id=category_id, Name=rows[0]["Name"], LastUse=rows[0]["LastUse"]
+    #     )
+    #     category.items = [
+    #         Item(
+    #             # Id=r["Id"],
+    #             Image=r["Image"],
+    #             LastUse=r["LastUse"],
+    #             Text=r["Text"],
+    #             Views=r["Views"],
+    #         )
+    #         for r in rows
+    #     ]
+    #     return category
+
     def get_all_complete_categories(self):
         ctgs = self.get_all_categories()
-        category_ids = [category.id for category in ctgs]
+        category_ids = [category.Id for category in ctgs]
         categories = []
         for category_id in category_ids:
             categories.append(self.get_category(category_id))
@@ -81,13 +99,13 @@ class MaterialService:
         recent = [self.map_to_category(rec) for rec in recent_dict]
 
         # Load items for selected categories
-        ids = [x.id for x in recent]
+        ids = [x.Id for x in recent]
         recent_items = self.repository.get_recent_items(ids)
         for category in recent:
             category.items = [
                 self.map_to_item(item)
                 for item in recent_items
-                if item["CategoryId"] == category.id
+                if item["CategoryId"] == category.Id
             ]
 
         batches = [self.get_batch(category) for category in recent]
@@ -96,16 +114,16 @@ class MaterialService:
         # return recent
 
     def category_from_row(self, row):
-        category = Category(id=row["Id"], name=row["Name"], last_view=row["LastUse"])
+        category = Category(Id=row["Id"], Name=row["Name"], LastUse=row["LastUse"])
         return category
 
     def item_from_row(self, row):
         item = Item(
-            id=row["Id"],
-            text=row["Text"],
-            views=row["Views"],
-            last_view=row["LastUse"],
-            image=row["Image"],
+            Id=row["Id"],
+            Text=row["Text"],
+            Views=row["Views"],
+            LastUse=row["LastUse"],
+            Image=row["Image"],
         )
         return item
 

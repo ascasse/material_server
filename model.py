@@ -9,23 +9,23 @@ import inspect
 class Item:
     """An element containing a text and optionally the location of an image."""
 
-    text: str
-    image: str = None
-    views: int = 0
-    last_view: datetime.date = None
-    id: int = 0
+    Text: str
+    Image: str = None
+    Views: int = 0
+    LastUse: datetime.date = None
+    Id: int = 0
 
 
 @dataclass
 class Category:
     """Container for a group of related items."""
 
-    name: str = field()
-    items: List = field(default_factory=list)
-    last_view: datetime.datetime = field(default=None)
-    completed: bool = False
-    type: int = 0
-    id: int = field(default=0)
+    Name: str = field()
+    Items: List = field(default_factory=list)
+    LastUse: datetime.datetime = field(default=None)
+    Completed: bool = False
+    Type: int = 0
+    Id: int = field(default=0)
 
 
 @dataclass

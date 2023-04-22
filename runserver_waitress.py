@@ -129,7 +129,7 @@ def all_categories():
 @app.route("/categories2")
 def all_categories2():
     logger.info("all_categories")
-    categories = service.get_all_categories()
+    categories = service.get_all_complete_categories()
     json_string = json.dumps(categories, cls=JSONEncoder, ensure_ascii=False)
     response = make_response(json_string)
     response.content_type = "application/json"
