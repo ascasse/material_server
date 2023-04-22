@@ -51,13 +51,13 @@ class MaterialService:
 
     def get_category(self, category_id: int) -> Category:
         """Retrieve the category with the given id."""
-        rows = self.repository.get_category(category_id)
+        rows = self.repository.category(category_id)
         category = Category(
-            id=category_id, name=rows[0]["Name"], last_view=rows[0]["c_LastUse"]
+            id=category_id, name=rows[0]["Name"], last_view=rows[0]["LastUse"]
         )
         category.items = [
             Item(
-                id=r["it_id"],
+                id=r["Id"],
                 image=r["Image"],
                 last_view=r["LastUse"],
                 text=r["Text"],

@@ -71,8 +71,9 @@ class SQLiteRepository(Repository):
         sql = f"SELECT * FROM Items WHERE Id = {item_id}"
         return self.execute_sql_select(sql)
 
-    def get_category(self, category_id: int):
-        sql = f"SELECT c.Id as c_id, Name, c.LastUse as c_LastUse, it.Id as it_id, * FROM Categories c JOIN items it ON it.CategoryId = c.id WHERE c.id = {category_id}"
+    def category(self, category_id: int):
+        # sql = f"SELECT c.Id as c_id, Name, c.LastUse as c_LastUse, it.Id as it_id, * FROM Categories c JOIN items it ON it.CategoryId = c.id WHERE c.id = {category_id}"
+        sql = f"SELECT * FROM Categories c JOIN items it ON it.CategoryId = c.id WHERE c.id = {category_id}"
         return self.execute_sql_select(sql)
 
     def save_category(self, category: Category) -> int:
