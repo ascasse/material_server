@@ -8,6 +8,7 @@ import logging
 import logging.config
 import pkgutil
 import inspect
+import ssl
 
 
 from os import environ, strerror
@@ -117,17 +118,6 @@ def get_recent_categories():
 
 @app.route("/categories")
 def all_categories():
-    logger.info("all_categories")
-    categories = service.get_all_complete_categories()
-    json_string = json.dumps(categories, cls=JSONEncoder, ensure_ascii=False)
-    response = make_response(json_string)
-    response.content_type = "application/json"
-    response.charset = "utf-8"
-    return response
-
-
-@app.route("/categories2")
-def all_categories2():
     logger.info("all_categories")
     categories = service.get_all_complete_categories()
     json_string = json.dumps(categories, cls=JSONEncoder, ensure_ascii=False)
@@ -249,20 +239,20 @@ def update_batch():
 #     return response
 
 
-@app.route("/info")
-def get_info():
-    info = service.get_info()
-    info_data = {"categories": 0, "bits": 0}
-    if info is not None:
-        info_data = {
-            "categories": info["cat_count"],
-            "groups": 0,
-            "bits": info["item_count"],
-        }
-    # groups, books = loader.get_element_count("books")
-    # info_data["book_groups"] = groups
-    # info_data["books"] = books
-    return jsonify(info_data), 200
+# @app.route("/info")
+# def get_info():
+#     info = service.get_info()
+#     info_data = {"categories": 0, "bits": 0}
+#     if info is not None:
+#         info_data = {
+#             "categories": info["cat_count"],
+#             "groups": 0,
+#             "bits": info["item_count"],
+#         }
+#     # groups, books = loader.get_element_count("books")
+#     # info_data["book_groups"] = groups
+#     # info_data["books"] = books
+#     return jsonify(info_data), 200
 
 
 @app.route("/favicon.ico")
@@ -296,8 +286,14 @@ def handle_exception(exception):
 
 
 if __name__ == "__main__":
-    # app.run(port=5050)
+
+    ## contexto para https. No admitido por Maui
+    # context = ("cert.pem", "key.pem")
+    # app.run(host="0.0.0.0", port=5050, ssl_context=context, threaded=True, debug=True)
+
+    # app.run(host="192.168.1.57", port=5050)
     # serve(app, host="192.168.1.57", port=5000)
+
     waitress_log = logging.getLogger("waitress")
     waitress_log.setLevel(logging.DEBUG)
     serve(app, host="0.0.0.0", port=5050)
