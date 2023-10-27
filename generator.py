@@ -29,7 +29,7 @@ class Generator:
     def load_categories(self) -> List:
         return self.process_dir(self.path)
 
-    def process_dir(self, data_path: str) -> List:
+    def process_dir(self, data_path: Path) -> List:
         """Create categories for directories containing images (jpg or png)"""
         print(data_path)
         categories = []

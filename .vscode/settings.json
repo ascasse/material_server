@@ -15,16 +15,15 @@
     ],
     "python.testing.pytestEnabled": false,
     "python.testing.unittestEnabled": true,
-    "json.schemas": [
-        {
-            "fileMatch": [
-                "categorydb.json"
-            ],
-            "schema":true,
-            "url": "./data/categorydb_schema.json"
-        }
-    ],
+    "json.schemas": [{
+        "fileMatch": [
+            "categorydb.json"
+        ],
+        "schema": true,
+        "url": "./data/categorydb_schema.json"
+    }],
     "python.analysis.extraPaths": [
         "./plugins/vocabulary",
-    ]
+    ],
+    "python.analysis.typeCheckingMode": "basic"
 }
