@@ -1,6 +1,7 @@
 """
     Launch material server
 """
+
 import io
 from os import environ, strerror
 import errno
@@ -65,7 +66,7 @@ verboseprint = print
 #     return found_plugins
 
 
-load_dotenv(verbose=True)
+# load_dotenv(verbose=True)
 
 MATERIAL = environ.get("MATERIAL", ".")
 BITS_PATH = Path(MATERIAL).joinpath("bits")
@@ -98,7 +99,7 @@ for blueprint in blueprints:
 def get_categories():
     logger.info("Get categories")
     json_string = json.dumps(
-        generator.all_categories(), default=category_encoder, ensure_ascii=False
+        generator.get_all_categories(), default=category_encoder, ensure_ascii=False
     ).encode("utf-8")
     response = make_response(json_string.decode("utf-8"))
     response.content_type = "application/json"

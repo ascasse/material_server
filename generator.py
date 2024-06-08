@@ -31,7 +31,7 @@ class Generator:
 
     def process_dir(self, data_path: Path) -> List:
         """Create categories for directories containing images (jpg or png)"""
-        print(data_path)
+        print(str(data_path))
         categories = []
         image_files = [
             f
@@ -112,7 +112,6 @@ def merge(old_categories: List, current: List):
 
 
 def main():
-
     try:
         parser = ArgumentParser()
         parser.add_argument("directory", help="directory to process")
@@ -129,13 +128,13 @@ def main():
 
         # Print categories info
         # found_categories = generator.load_categories()
-        found_categories = generator.process_dir(args.directory)
+        found_categories = generator.process_dir(Path(args.directory))
         print(f"Found {len(found_categories)} categories")
 
         print("Saving to database")
         generator.save_categories(found_categories)
 
-    except (SystemExit) as ex:
+    except SystemExit as ex:
         print(ex)
         return
 

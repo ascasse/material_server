@@ -88,21 +88,21 @@ class SQLiteRepository(Repository):
         self.__db_connection.row_factory = sqlite3.Row
         self.cur.execute(
             "INSERT INTO Categories (Name, LastUse) VALUES (?, ?)",
-            (category.name, category.last_view),
+            (category.Name, category.LastUse),
         )
         category_id = self.cur.lastrowid
         new_items = [
-            (it.text, it.image, it.views, it.last_view, category_id)
-            for it in category.items
-            if it.id == 0
+            (it.Text, it.Image, it.Views, it.LastUse, Category_id)
+            for it in category.Items
+            if it.Id == 0
         ]
         self.cur.executemany(
             "insert into Items (Text, Image, Views, LastUse, CategoryId) values (?, ?, ?, ?, ?)",
             new_items,
         )
 
-        if len(new_items) < len(category.items):
-            existing_items = [it.id for it in category.items if it.id != 0]
+        if len(new_items) < len(category.Items):
+            existing_items = [it.Id for it in category.Items if it.Id != 0]
             to_update = ",".join(existing_items)
             update_cmd = (
                 f"update Items set CategoryId = {category_id} where Id in ({to_update})",

@@ -1,15 +1,16 @@
-muebles	silla
-muebles	sofá
-muebles	estantería
-muebles	sillón
-muebles	lámpara
-muebles	armario
-muebles	cama
-muebles	cómoda
-muebles	mesilla
-muebles	cajonera
-familia	madre
-familia	hijo
+Category,word
+muebles,silla
+muebles,sofá
+muebles,estantería
+muebles,sillón
+muebles,lámpara
+muebles,armario
+muebles,cama
+muebles,cómoda
+muebles,mesilla
+muebles,cajonera
+familia,madre
+familia,hijo
 familia,hija
 familia,hermano
 familia,tío
