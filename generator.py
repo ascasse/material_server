@@ -4,12 +4,11 @@
 
 import sys
 from argparse import ArgumentParser
-from os import path
 
+from pathlib import Path
 import logging
 import json
 
-from pathlib import Path
 from typing import List
 
 from repository import Repository
@@ -35,14 +34,14 @@ class Generator:
         categories = []
         image_files = [
             f
-            for f in data_path.iterdir()
+            for f in data_path.glob("*")
             if (f.suffix.lower() == ".jpg" or f.suffix.lower() == ".png")
         ]
         if image_files:
             items = []
             for image in image_files:
-                imagefile_path = path.relpath(str(image), self.path)
-                items.append(Item(image.stem, imagefile_path))
+                imagefile_path = Path(data_path, str(image))
+                items.append(Item(image.stem, str(imagefile_path)))
             categories.append(Category(data_path.stem, items))
             logger.info(f"Category: {data_path.stem}")
             print(f"Items: {len(items)}")

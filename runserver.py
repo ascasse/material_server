@@ -70,12 +70,14 @@ verboseprint = print
 
 MATERIAL = environ.get("MATERIAL", ".")
 BITS_PATH = Path(MATERIAL).joinpath("bits")
+DATABASE = environ.get("database", None)
 
 logger.info(f"Reading material from {MATERIAL}.")
+logger.info(f"database {DATABASE}.")
 
 # Initialize database
 try:
-    generator = MaterialService(SQLiteRepository())
+    generator = MaterialService(SQLiteRepository(DATABASE))
 except FileNotFoundError:
     print(f"{strerror(errno.ENOENT)}: {BITS_PATH}")
     exit("No data available")

@@ -92,9 +92,9 @@ class SQLiteRepository(Repository):
         )
         category_id = self.cur.lastrowid
         new_items = [
-            (it.Text, it.Image, it.Views, it.LastUse, Category_id)
+            (it.text, it.image, it.views, it.last_view, category_id)
             for it in category.Items
-            if it.Id == 0
+            if it.id == 0
         ]
         self.cur.executemany(
             "insert into Items (Text, Image, Views, LastUse, CategoryId) values (?, ?, ?, ?, ?)",
@@ -102,7 +102,7 @@ class SQLiteRepository(Repository):
         )
 
         if len(new_items) < len(category.Items):
-            existing_items = [it.Id for it in category.Items if it.Id != 0]
+            existing_items = [it.id for it in category.Items if it.id != 0]
             to_update = ",".join(existing_items)
             update_cmd = (
                 f"update Items set CategoryId = {category_id} where Id in ({to_update})",
